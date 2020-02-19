@@ -41,5 +41,24 @@ def modify_dataset():
     dataframe_a = dataframe_a.set_index('time')
     dataframe_a.to_csv('data/stocks_sentdex_1-6-2016_full.csv')
 
+def single_stock(ticker_symbol):
+    """
+    DOCSTRING
+    """
+    dataframe_a = pandas.read_csv(
+        'data/stocks_sentdex_1-6-2016.csv', 
+        index_col='time', 
+        parse_dates=True
+        )
+    dataframe_a = dataframe_a[dataframe_a.type == ticker_symbol.lower()]
+    moving_average_500 = dataframe_a['value'].rolling(500).mean()
+    axis_1 = pyplot.subplot(2, 1, 1)
+    dataframe_a['close'].plot(label='Price')
+    pyplot.legend()
+    axis_2 = pyplot.subplot(2, 1, 2, sharex=axis_1)
+    moving_average_500.plot(label='ma500')
+    pyplot.legend()
+    pyplot.show()
+
 if __name__ == '__main__':
-    modify_dataset()
+    single_stock('bac')
