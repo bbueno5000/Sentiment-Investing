@@ -259,3 +259,4 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/sentiment_analysis_and_investing/data/stocks_sentdex_1-6-2016.csv
