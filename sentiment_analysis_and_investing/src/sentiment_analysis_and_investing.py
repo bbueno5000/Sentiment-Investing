@@ -45,6 +45,7 @@ def automatic_moving_average(
         dataframe_a['MA3'],
         dataframe_a['MA4']
         )
+    dataframe_a['change'] = dataframe_a['position'].diff()
     axis_1 = pyplot.subplot(2, 1, 1)
     dataframe_a['close'].plot(label='Price')
     pyplot.legend()
