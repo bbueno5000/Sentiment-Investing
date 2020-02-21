@@ -2,14 +2,21 @@
 DOCSTRING
 """
 import datetime
-import pandas
-import pandas_datareader
+import math
 from matplotlib import pyplot
 from matplotlib import style
+import pandas
+import pandas_datareader
+
 
 style.use('ggplot')
 
-def automatic_moving_average(ticker_symbol):
+def automatic_moving_average(
+    ticker_symbol, 
+    denominator_1=275, 
+    denominator_2=110, 
+    denominator_3=55, 
+    denominator_4=5.5):
     """
     DOCSTRING
     """
@@ -17,18 +24,24 @@ def automatic_moving_average(ticker_symbol):
     dataframe_a = dataframe_a[dataframe_a.type == ticker_symbol.lower()]
     count = dataframe_a['type'].value_counts()
     count = int(count[ticker_symbol])
-    moving_average_1 = dataframe_a['value'].rolling(count/275)
-    moving_average_2 = dataframe_a['value'].rolling(count/110)
-    moving_average_3 = dataframe_a['value'].rolling(count/55)
-    moving_average_4 = dataframe_a['value'].rolling(count/5.5)
+    moving_average_1 = dataframe_a['value'].rolling(count/denominator_1)
+    moving_average_2 = dataframe_a['value'].rolling(count/denominator_2)
+    moving_average_3 = dataframe_a['value'].rolling(count/denominator_3)
+    moving_average_4 = dataframe_a['value'].rolling(count/denominator_4)
+    starting_point = int(math.ceil(count/denominator_4))
+    dataframe_a['MA1'] = moving_average_1
+    dataframe_a['MA2'] = moving_average_2
+    dataframe_a['MA3'] = moving_average_3
+    dataframe_a['MA4'] = moving_average_4
+    dataframe_a = dataframe_a[starting_point:]
     axis_1 = pyplot.subplot(2, 1, 1)
     dataframe_a['close'].plot(label='Price')
     pyplot.legend()
     axis_2 = pyplot.subplot(2, 1, 2, sharex=axis_1)
-    moving_average_1.plot(label=str(count/275)+'MA')
-    moving_average_2.plot(label=str(count/110)+'MA')
-    moving_average_3.plot(label=str(count/55)+'MA')
-    moving_average_4.plot(label=str(round(count/5.5), 1)+'MA')
+    dataframe_a['MA1'].plot(label=str(count/denominator_1)+'MA')
+    dataframe_a['MA2'].plot(label=str(count/denominator_2)+'MA')
+    dataframe_a['MA3'].plot(label=str(count/denominator_3)+'MA')
+    dataframe_a['MA4'].plot(label=str(round(count/denominator_4), 1)+'MA')
     pyplot.legend()
     pyplot.show()
 
