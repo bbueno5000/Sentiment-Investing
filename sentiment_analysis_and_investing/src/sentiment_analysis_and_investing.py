@@ -8,7 +8,6 @@ from matplotlib import style
 import pandas
 import pandas_datareader
 
-
 style.use('ggplot')
 
 def automatic_moving_average(
@@ -184,6 +183,21 @@ def outlier_fixing(ticker_symbol):
     dataframe_a = dataframe_a[dataframe_a['std'] < 20]
     axis_2 = pyplot.subplot(2, 1, 2, sharex=axis_1)
     dataframe_a['std'].plot(label='Deviation')
+    pyplot.legend()
+    pyplot.show()
+
+def results():
+    """
+    DOCSTRING
+    """
+    dataframe_a = pandas.read_csv(
+        'performance_data_sp500ish.csv',
+        index_col='time',
+        parse_dates=True
+        )
+    dataframe_a.sort_index(inplace=True)
+    dataframe_a['expanding_mean'] = pandas.expanding_mean(dataframe_a['percent_change'], 0)
+    dataframe_a['expanding_mean'].plot(label='Performance')
     pyplot.legend()
     pyplot.show()
 
