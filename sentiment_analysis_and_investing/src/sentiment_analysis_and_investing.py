@@ -34,6 +34,17 @@ def automatic_moving_average(
     dataframe_a['MA3'] = moving_average_3
     dataframe_a['MA4'] = moving_average_4
     dataframe_a = dataframe_a[starting_point:]
+    del dataframe_a['MA100']
+    del dataframe_a['MA250']
+    del dataframe_a['MA500']
+    del dataframe_a['MA5000']
+    dataframe_a['position'] = map(
+        calculate_position, 
+        dataframe_a['MA1'], 
+        dataframe_a['MA2'],
+        dataframe_a['MA3'],
+        dataframe_a['MA4']
+        )
     axis_1 = pyplot.subplot(2, 1, 1)
     dataframe_a['close'].plot(label='Price')
     pyplot.legend()
@@ -44,6 +55,29 @@ def automatic_moving_average(
     dataframe_a['MA4'].plot(label=str(round(count/denominator_4), 1)+'MA')
     pyplot.legend()
     pyplot.show()
+
+def calculate_position(moving_average_1, moving_average_2, moving_average_3, moving_average_4):
+    """
+    DOCSTRING
+    """
+    if moving_average_4 > moving_average_1 > moving_average_2 > moving_average_3:
+        return 1
+    elif moving_average_1 > moving_average_4 > moving_average_2 > moving_average_3:
+        return 2
+    elif moving_average_1 > moving_average_2 > moving_average_4 > moving_average_3:
+        return 3
+    elif moving_average_1 > moving_average_2 > moving_average_3 > moving_average_4:
+        return 4
+    elif moving_average_1 < moving_average_2 < moving_average_3 < moving_average_4:
+        return -4
+    elif moving_average_1 < moving_average_2 < moving_average_4 < moving_average_3:
+        return -3
+    elif moving_average_1 < moving_average_4 < moving_average_2 < moving_average_3:
+        return -2
+    elif moving_average_4 < moving_average_1 < moving_average_2 < moving_average_3:
+        return -1
+    else:
+        return None
 
 def introduction():
     """
