@@ -9,6 +9,29 @@ from matplotlib import style
 
 style.use('ggplot')
 
+def automatic_moving_average(ticker_symbol):
+    """
+    DOCSTRING
+    """
+    dataframe_a = pandas.read_csv('data/stocks_sentdex_1-6-2016.csv')
+    dataframe_a = dataframe_a[dataframe_a.type == ticker_symbol.lower()]
+    count = dataframe_a['type'].value_counts()
+    count = int(count[ticker_symbol])
+    moving_average_1 = dataframe_a['value'].rolling(count/275)
+    moving_average_2 = dataframe_a['value'].rolling(count/110)
+    moving_average_3 = dataframe_a['value'].rolling(count/55)
+    moving_average_4 = dataframe_a['value'].rolling(count/5.5)
+    axis_1 = pyplot.subplot(2, 1, 1)
+    dataframe_a['close'].plot(label='Price')
+    pyplot.legend()
+    axis_2 = pyplot.subplot(2, 1, 2, sharex=axis_1)
+    moving_average_1.plot(label=str(count/275)+'MA')
+    moving_average_2.plot(label=str(count/110)+'MA')
+    moving_average_3.plot(label=str(count/55)+'MA')
+    moving_average_4.plot(label=str(round(count/5.5), 1)+'MA')
+    pyplot.legend()
+    pyplot.show()
+
 def introduction():
     """
     DOCSTRING
@@ -53,7 +76,7 @@ def outlier_fixing(ticker_symbol):
     dataframe_a['std'] = dataframe_a['close'].rolling(25, min_periods=1).std()
     dataframe_a = dataframe_a[dataframe_a['std']<20]
     axis_2 = pyplot.subplot(2, 1, 2, sharex=axis_1)
-    standard_deviation['std'].plot(label='Deviation')
+    dataframe_a['std'].plot(label='Deviation')
     pyplot.legend()
     pyplot.show()
 
