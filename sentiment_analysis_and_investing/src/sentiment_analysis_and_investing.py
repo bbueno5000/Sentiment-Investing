@@ -57,6 +57,48 @@ def automatic_moving_average(
     pyplot.legend()
     pyplot.show()
 
+def back_test(dataset, close_index, change_index):
+    """
+    DOCSTRING
+    """
+    stock_holdings = 0
+    initial_capital = dataset['close'][0] * 8
+    current_capital = initial_capital 
+    current_valuation = current_capital
+    for row in dataset.iterrows():
+        try:
+            index, data = row
+            row_data = data.tolist()
+            price = row_data[close_index]
+            change = int(row_data[change_index])
+            if isinstance(change, (int, long)) and change != 0:
+                if change > 0:
+                    if (change*price) < current_capital:
+                        current_capital -= (change*price)
+                        stock_holdings += change
+                        current_valuation = current_capital+(stock_holdings*price)
+                    else:
+                        pass
+                elif change < 0:
+                    change = abs(change)
+                    if stock_holdings == 0:
+                        pass
+                    elif (stock_holdings - change) < 0:
+                        change = stock_holdings
+                    else:
+                        stock_holdings -= change
+                        current_capital += change*price
+                        current_valuation = current_capital+(stock_holdings*price)
+        except:
+            pass
+    percent_change = ((current_valuation-initial_capital)/initial_capital)*100.00
+    print('Holdings:', stock_holdings)
+    print('Current Capital', current_capital)
+    print('Initial Capital', initial_capital)
+    print('Current Valuation', current_valuation)
+    print('Percent Growth', percent_change)
+
+
 def calculate_position(moving_average_1, moving_average_2, moving_average_3, moving_average_4):
     """
     DOCSTRING
